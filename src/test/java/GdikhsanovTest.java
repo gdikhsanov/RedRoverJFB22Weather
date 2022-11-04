@@ -24,29 +24,24 @@ public class GdikhsanovTest {
 
     private WebDriver driver;
 
+    protected WebDriver getDriver() {
+        return driver;
+    }
+
     @BeforeMethod
     protected void beforeMethod() {
-        System.setProperty("webdriver.chrome.driver", "c:\\Users\\Helga\\IdeaProjects\\chromedriver.exe");
 
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("mac")) {
+            System.setProperty("webdriver.chrome.driver", System.getProperty("user.home") + System.getProperty("file.separator") + "chromedriver");
+        } else {
+            System.setProperty("webdriver.chrome.driver", System.getProperty("user.home") + System.getProperty("file.separator") + "chromedriver.exe");
+        }
         driver = new ChromeDriver();
     }
 
     @AfterMethod
     protected void afterMethod() {
-        driver.quit();
-    }
-
-    protected WebDriver getDriver() {
-        return driver;
-    }
-
-    @Ignore
-    @Test
-    public void testH2TagText_WhenSearchingCityCountry(){
-
-        System.setProperty("webdriver.chrome.driver", "c:\\Users\\Helga\\IdeaProjects\\chromedriver.exe");
-
-
         getDriver().quit();
     }
 
@@ -58,7 +53,7 @@ public class GdikhsanovTest {
         getDriver().get(url);
         Thread.sleep(5000);
 
-//      От Ольги
+//      От Ольги наведение на элемент, проверка на видимость и получение текста.
 //        new Actions(getDriver()).moveToElement(getDriver().findElement(
 //                By.xpath("//a[text()='Contrary']"))).build().perform();
 
@@ -66,27 +61,17 @@ public class GdikhsanovTest {
 //                .until(ExpectedConditions.visibilityOfElementLocated(
 //                        By.xpath("//div[@class='tooltip-inner']"))).getText();
 
-//       Нажимается и без allow cookies
-        WebElement cookiesButton = new WebDriverWait(getDriver(), 20)
+        WebElement cookiesAllowButton = new WebDriverWait(getDriver(), 20)
                 .until(ExpectedConditions.visibilityOfElementLocated(
                         By.xpath("//button[@class='stick-footer-panel__link']")));
 
-        cookiesButton.click();
-
-//        if (driver.findElement(By.xpath("//button[@class='stick-footer-panel__link']")).getText().equals("Allow all")){
-//
-//            Thread.sleep(1000);
-//            driver.findElement(By.xpath("//button[@class='stick-footer-panel__link']")).click();
-//        }
+        cookiesAllowButton.click();
 
         getDriver().findElement(By.xpath("//div[@id='desktop-menu']//a[@href='/guide']")).click();
         String currentUrl = getDriver().getCurrentUrl();
         String currentTitle = getDriver().getTitle();
 
-
         Assert.assertEquals(currentUrl, "https://openweathermap.org/guide");
         Assert.assertEquals(currentTitle, "OpenWeatherMap API guide - OpenWeatherMap");
-
-        getDriver().quit();
     }
 }
