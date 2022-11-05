@@ -1,4 +1,5 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,20 +12,12 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
-
 import java.util.Collections;
-import java.util.TreeMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class GdikhsanovTest {
-    //TC_1_1  - Тест кейс:
-    //1. Открыть страницу https://openweathermap.org/
-    //2. Набрать в строке поиска город Paris
-    //3. Нажать пункт меню Search
-    //4. Из выпадающего списка выбрать Paris, FR
-    //5. Подтвердить, что заголовок изменился на "Paris, FR"
 
     private WebDriver driver;
 
@@ -63,7 +56,7 @@ public class GdikhsanovTest {
 //        new Actions(getDriver()).moveToElement(getDriver().findElement(
 //                By.xpath("//a[text()='Contrary']"))).build().perform();
 
-    //        String actualToolTip = new WebDriverWait(getDriver(), 20)
+//               String actualToolTip = new WebDriverWait(getDriver(), 20)
 //                .until(ExpectedConditions.visibilityOfElementLocated(
 //                        By.xpath("//div[@class='tooltip-inner']"))).getText();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +92,7 @@ public class GdikhsanovTest {
         getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         getDriver().get(url);
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                        By.xpath("//div[@class='owm-loader-container']/div")));
+                By.xpath("//div[@class='owm-loader-container']/div")));
         getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         getDriver().findElement(By.xpath("//div[@class='option'][contains (text(),'Imperial: °F, mph')]")).click();
@@ -107,7 +100,7 @@ public class GdikhsanovTest {
         getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         getDriver().get(url);
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                        By.xpath("//div[@class='owm-loader-container']/div")));
+                By.xpath("//div[@class='owm-loader-container']/div")));
         getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         WebElement text = getDriver().findElement(By.xpath("//span[@class='heading']"));
@@ -186,8 +179,8 @@ public class GdikhsanovTest {
 
         getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         getDriver().get(url);
-       wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                        By.xpath("//div[@class='owm-loader-container']/div")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
         getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         getDriver().findElement(By.xpath("//div[@id='support-dropdown']")).click();
@@ -359,7 +352,7 @@ public class GdikhsanovTest {
 
 
     @Test
-    public void test8Openweathermap_logo_gdiksanov() throws InterruptedException {
+    public void test8Openweathermap_logo_gdiksanov() {
 
         String url = "https://openweathermap.org/";
         WebDriverWait wait = new WebDriverWait(getDriver(), 10); // можно назначить один раз за тест или класс
@@ -382,4 +375,50 @@ public class GdikhsanovTest {
         Assert.assertTrue(getDriver().getCurrentUrl().equals(url));
     }
 
+
+    @Test
+    public void test9Openweathermap_searchRome_gdiksanov() {
+
+        String url = "https://openweathermap.org/";
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10); // можно назначить один раз за тест или класс
+
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        getDriver().get(url);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
+        getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        getDriver().findElement(By.xpath("//div[@id='desktop-menu']//input[@name='q']")).sendKeys("Rome", Keys.RETURN);
+
+        Assert.assertTrue(getDriver().getCurrentUrl().contains("find") && getDriver().getCurrentUrl().contains("Rome"));
+        Assert.assertTrue(getDriver().findElement(By.xpath("//input[@id='search_str']")).getAttribute("value").equals("Rome"));
+    }
+
+
+    @Test
+    public void test10Openweathermap_APIButton_gdiksanov() {
+
+        String url = "https://openweathermap.org/";
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10); // можно назначить один раз за тест или класс
+
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        getDriver().get(url);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
+        getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        getDriver().findElement(By.xpath("//div[@id='desktop-menu']//a[@href='/api']")).click();
+
+        List<WebElement> buttons = getDriver().findElements(By.xpath("//a[contains(@class,'orange')]"));
+
+        int result = 0;
+//
+//        for (WebElement element: buttons
+//             ) {
+//        result++;
+//        }
+        result = buttons.size();
+
+        Assert.assertEquals(result, 30);
+    }
 }
