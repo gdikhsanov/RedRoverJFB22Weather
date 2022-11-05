@@ -13,6 +13,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
@@ -65,7 +66,7 @@ public class GdikhsanovTest {
     //        String actualToolTip = new WebDriverWait(getDriver(), 20)
 //                .until(ExpectedConditions.visibilityOfElementLocated(
 //                        By.xpath("//div[@class='tooltip-inner']"))).getText();
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Test
     public void test1Openweathermap_justGoToGuide_gdiksanov() {
 
@@ -327,6 +328,58 @@ public class GdikhsanovTest {
                 By.xpath("//input[@type='submit'][@name='commit']")).click();
 
         Thread.sleep(5000);
+    }
+
+
+    @Test
+    public void test7Openweathermap_unisFC_gdiksanov() {
+
+        String url = "https://openweathermap.org/";
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10); // можно назначить один раз за тест или класс
+
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        getDriver().get(url);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
+        getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        getDriver().findElement(By.xpath("//div[@class='option'][contains (text(),'Metric: °C, m/s')]")).click();
+
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        getDriver().get(url);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
+        getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        WebElement text = getDriver().findElement(By.xpath("//span[@class='heading']"));
+        char currentUnit = text.getText().charAt(text.getText().length() - 1);
+
+        Assert.assertEquals(currentUnit, 'C');
+    }
+
+
+    @Test
+    public void test8Openweathermap_logo_gdiksanov() throws InterruptedException {
+
+        String url = "https://openweathermap.org/";
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10); // можно назначить один раз за тест или класс
+
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        getDriver().get(url);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
+        getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        url = getDriver().getCurrentUrl();
+
+        getDriver().findElement(By.xpath("//ul[@id='first-level-nav']/li/a/img")).click();
+
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.xpath("//div[@class='owm-loader-container']/div")));
+        getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+
+        Assert.assertTrue(getDriver().getCurrentUrl().equals(url));
     }
 
 }
