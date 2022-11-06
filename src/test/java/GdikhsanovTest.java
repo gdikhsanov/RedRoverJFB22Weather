@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,7 +13,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
@@ -28,7 +26,7 @@ public class GdikhsanovTest {
 
     @BeforeMethod
     protected void beforeMethod() {
-
+        //выбираем файл хромдрайвера в зависимости от системы
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("mac")) {
             System.setProperty("webdriver.chrome.driver", System.getProperty("user.home")
@@ -37,6 +35,7 @@ public class GdikhsanovTest {
             System.setProperty("webdriver.chrome.driver", System.getProperty("user.home")
                     + System.getProperty("file.separator") + "chromedriver.exe");
         }
+
         //скрываем селениум и разворачиваем браузер на весь экран
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
@@ -45,9 +44,10 @@ public class GdikhsanovTest {
         options.addArguments("--disable-extensions");
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
         options.setExperimentalOption("useAutomationExtension", false);
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        driver = new ChromeDriver(capabilities);
+//        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+//        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+//        driver = new ChromeDriver(capabilities); // можно убрать capabilities и сделать ChromeDriver(options);
+        driver = new ChromeDriver(options);
 //        getDriver().manage().window().maximize(); // повторяет options.addArguments("start-maximized");
     }
 
@@ -64,6 +64,7 @@ public class GdikhsanovTest {
 //                .until(ExpectedConditions.visibilityOfElementLocated(
 //                        By.xpath("//div[@class='tooltip-inner']"))).getText();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     public void test1Openweathermap_justGoToGuide_gdiksanov() {
 
@@ -147,9 +148,8 @@ public class GdikhsanovTest {
         Assert.assertEquals(manageBtnText, expectedManageBtnText);
     }
 
-
     @Test
-    public void test4Openweathermap_supportMenu_gdiksanov() throws InterruptedException {
+    public void test4Openweathermap_supportMenu_gdiksanov() {
 
         String url = "https://openweathermap.org/";
         String email = "qwerty@qwerty.org";
@@ -182,7 +182,6 @@ public class GdikhsanovTest {
 
         WebDriverWait wait = new WebDriverWait(getDriver(), 10); // можно назначить один раз за тест или класс
 
-
         getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         getDriver().get(url);
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
@@ -211,7 +210,18 @@ public class GdikhsanovTest {
             }
         }
 
+//  Альтернатива "для бегинеров"
+//        List<String> set = new ArrayList<>(getDriver().getWindowHandles());
+//
+//        for (int i = 0; i < getDriver().getWindowHandles().size(); i++) {
+//            if (!originalWindow.equals(set.get(i))) {
+//                getDriver().switchTo().window(set.get(i));
+//                break;
+//            }
+//        }
+
 //Wait for the new tab to finish loading content
+
         wait.until(urlToBe("https://home.openweathermap.org/questions"));
 
         getDriver().findElement(
@@ -241,7 +251,7 @@ public class GdikhsanovTest {
     @Ignore
     @Test
     public void test6Openweathermap_emailError_gdiksanov() throws InterruptedException {
-        //try to sign in with google account
+        //try to sign in with Google account
 //        getDriver().get("https://accounts.google.com/signin/v2/identifier?hl=en&passive=true&continue=https%3A%2F%2Fwww.google.com%2F%3Fgws_rd%3Dssl&ec=GAZAmgQ&flowName=GlifWebSignIn&flowEntry=ServiceLogin");
 //        Thread.sleep(2000);
 //        getDriver().findElement(By.name("identifier")).sendKeys("Email"+ Keys.ENTER);
@@ -292,12 +302,25 @@ public class GdikhsanovTest {
         getDriver().findElement(
                 By.xpath("//input[@id='question_form_email']")).sendKeys(email);
 
-        Select select = new Select(getDriver().findElement(
-                By.xpath("//select[@id='question_form_subject']")));
-        select.selectByValue("Sales");
+//        Select select = new Select(getDriver().findElement(
+//                By.xpath("//select[@id='question_form_subject']")));
+//        select.selectByValue("Sales");
+
+        WebElement enterSubject = getDriver().findElement(By.xpath(
+                "//select[@class='form-control select required']"));
+
+        enterSubject.click();
+
+        Thread.sleep(1000);
+
+        enterSubject.sendKeys("Other");
+
+        Thread.sleep(4000);
 
         getDriver().findElement(
                 By.xpath("//textarea[@id='question_form_message']")).sendKeys(message);
+
+        Thread.sleep(2000);
 // моё
 //        getDriver().switchTo().frame(getDriver().findElement(By.xpath("//iframe[@title='reCAPTCHA']")));
 //        getDriver().findElement(
@@ -308,9 +331,7 @@ public class GdikhsanovTest {
 //        new WebDriverWait(driver, 20).until(ExpectedConditions.elementToBeClickable(
 //                By.cssSelector("div.recaptcha-checkbox-checkmark"))).click();
 
-        Thread.sleep(5000);
         getDriver().manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-
 
         wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
                 By.xpath("//iframe[starts-with(@name, 'a-') and starts-with(@src, 'https://www.google.com/recaptcha')]")));
@@ -321,14 +342,16 @@ public class GdikhsanovTest {
 
         getDriver().switchTo().defaultContent();
 
-        Thread.sleep(5000);
+        Thread.sleep(2000);
 
         getDriver().findElement(
                 By.xpath("//input[@type='submit'][@name='commit']")).click();
 
-        Thread.sleep(5000);
-    }
+        Thread.sleep(2000);
 
+        Assert.assertEquals(getDriver().findElement(
+                By.xpath("//span[@class='help-block']")).getText(), "can't be blank");
+    }
 
     @Test
     public void test7Openweathermap_unisFC_gdiksanov() {
@@ -356,7 +379,6 @@ public class GdikhsanovTest {
         Assert.assertEquals(currentUnit, 'C');
     }
 
-
     @Test
     public void test8Openweathermap_logo_gdiksanov() {
 
@@ -381,7 +403,6 @@ public class GdikhsanovTest {
         Assert.assertTrue(getDriver().getCurrentUrl().equals(url));
     }
 
-
     @Test
     public void test9Openweathermap_searchRome_gdiksanov() {
 
@@ -399,7 +420,6 @@ public class GdikhsanovTest {
         Assert.assertTrue(getDriver().getCurrentUrl().contains("find") && getDriver().getCurrentUrl().contains("Rome"));
         Assert.assertTrue(getDriver().findElement(By.xpath("//input[@id='search_str']")).getAttribute("value").equals("Rome"));
     }
-
 
     @Test
     public void test10Openweathermap_APIButton_gdiksanov() {
@@ -428,6 +448,5 @@ public class GdikhsanovTest {
 //        Assert.assertEquals(result, 30);
 
         Assert.assertEquals(getDriver().findElements(By.xpath("//a[contains(@class,'orange')]")).size(), 30);
-
     }
 }
