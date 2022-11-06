@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -38,12 +39,15 @@ public class GdikhsanovTest {
         }
         //скрываем селениум и разворачиваем браузер на весь экран
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--incognito");
         options.addArguments("start-maximized");
         options.addArguments("disable-infobars");
         options.addArguments("--disable-extensions");
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
         options.setExperimentalOption("useAutomationExtension", false);
-        driver = new ChromeDriver(options);
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        driver = new ChromeDriver(capabilities);
 //        getDriver().manage().window().maximize(); // повторяет options.addArguments("start-maximized");
     }
 
@@ -135,6 +139,8 @@ public class GdikhsanovTest {
                         By.xpath("//a[@class='stick-footer-panel__link']"))
                 .getText();
         String expectedManageBtnText = "Manage cookies";
+
+        //Ирина говорит, что надо отдельно найти панель, отдельно текст на ней "Подтвердить, что внизу страницы есть панель с текстом “We use"
 
         Assert.assertEquals(footerCookiesText, expectedPanelText);
         Assert.assertEquals(allowAllBtnText, expectedAllowAllBtnText);
@@ -409,16 +415,19 @@ public class GdikhsanovTest {
 
         getDriver().findElement(By.xpath("//div[@id='desktop-menu']//a[@href='/api']")).click();
 
-        List<WebElement> buttons = getDriver().findElements(By.xpath("//a[contains(@class,'orange')]"));
-
-        int result = 0;
+//        List<WebElement> buttons = getDriver().findElements(By.xpath("//a[contains(@class,'orange')]"));
 //
-//        for (WebElement element: buttons
-//             ) {
-//        result++;
-//        }
-        result = buttons.size();
+//        int result = 0;
+////
+////        for (WebElement element: buttons
+////             ) {
+////        result++;
+////        }
+//        result = buttons.size();
+//
+//        Assert.assertEquals(result, 30);
 
-        Assert.assertEquals(result, 30);
+        Assert.assertEquals(getDriver().findElements(By.xpath("//a[contains(@class,'orange')]")).size(), 30);
+
     }
 }
