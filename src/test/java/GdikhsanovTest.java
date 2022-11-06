@@ -36,19 +36,28 @@ public class GdikhsanovTest {
                     + System.getProperty("file.separator") + "chromedriver.exe");
         }
 
-        //скрываем селениум и разворачиваем браузер на весь экран
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--incognito");
-        options.addArguments("start-maximized");
-        options.addArguments("disable-infobars");
-        options.addArguments("--disable-extensions");
+        //invisible mode
+        options.addArguments("--headless",
+                "--disable-gpu",
+                "--window-size=1920,1200",
+                "--ignore-certificate-errors",
+                "--disable-extensions",
+                "--no-sandbox",
+                "--disable-dev-shm-usage");
+        //visible mode и разворачиваем браузер на весь экран
+        options.addArguments("--incognito",
+                "start-maximized",
+                "disable-infobars",
+                "--disable-extensions");
+        //скрываем селениум
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
         options.setExperimentalOption("useAutomationExtension", false);
 //        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
 //        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 //        driver = new ChromeDriver(capabilities); // можно убрать capabilities и сделать ChromeDriver(options);
         driver = new ChromeDriver(options);
-//        getDriver().manage().window().maximize(); // повторяет options.addArguments("start-maximized");
+//        getDriver().manage().window().maximize(); // Можно вставлять в тесты, но повторяет options.addArguments("start-maximized");
     }
 
     @AfterMethod
